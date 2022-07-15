@@ -7,6 +7,13 @@ const bodyParser = require("body-parser");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+function printINFO(description, payment) {
+  console.log(
+    description,
+    `Payment id: ${payment.id}, status: ${payment.status}`
+  );
+}
+
 app.use(express.static(process.env.STATIC_DIR));
 // Use JSON parser for all non-webhook routes
 app.use((req, res, next) => {
@@ -60,48 +67,30 @@ app.post(
     }
 
     // Successfully constructed event
-    console.log("✅ Success:", event.id);
+    console.log("✅ Success, event id:", event.id);
 
     if (event.type === "payment_intent.created") {
-      const payment = event.data.object;
-      console.log(
-        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
-      );
+      printINFO("Payment created: ", event.data.object);
     }
 
     if (event.type === "payment_intent.canceled") {
-      const payment = event.data.object;
-      console.log(
-        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
-      );
+      printINFO("Payment canceled: ", event.data.object);
     }
 
     if (event.type === "payment_intent.payment_failed") {
-      const payment = event.data.object;
-      console.log(
-        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
-      );
+      printINFO("Payment failed: ", event.data.object);
     }
 
     if (event.type === "payment_intent.processing") {
-      const payment = event.data.object;
-      console.log(
-        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
-      );
+      printINFO("Processing: ", event.data.object);
     }
 
     if (event.type === "payment_intent.requires_action") {
-      const payment = event.data.object;
-      console.log(
-        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
-      );
+      printINFO("Request action: ", event.data.object);
     }
 
     if (event.type === "payment_intent.succeeded") {
-      const payment = event.data.object;
-      console.log(
-        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
-      );
+      printINFO("Payment succeeded: ", event.data.object);
     }
 
     // Return a response to acknowledge receipt of the event
