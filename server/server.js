@@ -58,6 +58,10 @@ app.post(
     // Successfully constructed event
     console.log("✅ Success:", event.id);
 
+    if (event.type === "payment_intent.created") {
+      console.log("Payment intent created!");
+    }
+
     // Return a response to acknowledge receipt of the event
     res.json({ received: true });
   }
