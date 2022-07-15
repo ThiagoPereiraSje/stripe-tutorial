@@ -18,11 +18,19 @@ app.use((req, res, next) => {
 });
 
 app.post("/create-payment", async (req, res) => {
-  const payment = await stripe.paymentIntents.create({
-    amount: 10,
-    currency: "usd",
-  });
-  res.json({ clientSecret: payment.client_secret });
+  const { paymentMethod, currency } = req.body;
+
+  try {
+    const payment = await stripe.paymentIntents.create({
+      amount: 10,
+      currency: currency,
+      payment_method_types: [paymentMethod],
+    });
+
+    res.json({ clientSecret: payment.client_secret });
+  } catch (e) {
+    res.status(400).json({ error: { message: e.message } });
+  }
 });
 
 app.get("/", (req, res) => {
