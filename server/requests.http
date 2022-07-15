@@ -2,6 +2,7 @@ POST http://localhost:4242/create-payment
 Content-Type: application/json
 
 { 
-  "paymentMethod": "card", 
+  "paymentMethod": "card",
+  "amount": 50, 
   "currency": "usd" 
 }

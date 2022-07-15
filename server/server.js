@@ -18,11 +18,11 @@ app.use((req, res, next) => {
 });
 
 app.post("/create-payment", async (req, res) => {
-  const { paymentMethod, currency } = req.body;
+  const { paymentMethod, amount, currency } = req.body;
 
   try {
     const payment = await stripe.paymentIntents.create({
-      amount: 10,
+      amount: amount,
       currency: currency,
       payment_method_types: [paymentMethod],
     });
@@ -31,6 +31,10 @@ app.post("/create-payment", async (req, res) => {
   } catch (e) {
     res.status(400).json({ error: { message: e.message } });
   }
+});
+
+app.get("/config", async (req, res) => {
+  res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
 });
 
 app.get("/", (req, res) => {
@@ -59,7 +63,45 @@ app.post(
     console.log("✅ Success:", event.id);
 
     if (event.type === "payment_intent.created") {
-      console.log("Payment intent created!");
+      const payment = event.data.object;
+      console.log(
+        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
+      );
+    }
+
+    if (event.type === "payment_intent.canceled") {
+      const payment = event.data.object;
+      console.log(
+        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
+      );
+    }
+
+    if (event.type === "payment_intent.payment_failed") {
+      const payment = event.data.object;
+      console.log(
+        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
+      );
+    }
+
+    if (event.type === "payment_intent.processing") {
+      const payment = event.data.object;
+      console.log(
+        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
+      );
+    }
+
+    if (event.type === "payment_intent.requires_action") {
+      const payment = event.data.object;
+      console.log(
+        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
+      );
+    }
+
+    if (event.type === "payment_intent.succeeded") {
+      const payment = event.data.object;
+      console.log(
+        `Event id: ${event.id} Payment id: ${payment.id}, status: ${payment.status}`
+      );
     }
 
     // Return a response to acknowledge receipt of the event
