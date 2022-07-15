@@ -17,6 +17,14 @@ app.use((req, res, next) => {
   }
 });
 
+app.post("/create-payment", async (req, res) => {
+  const payment = await stripe.paymentIntents.create({
+    amount: 10,
+    currency: "usd",
+  });
+  res.json({ clientSecret: payment.client_secret });
+});
+
 app.get("/", (req, res) => {
   const path = resolve(process.env.STATIC_DIR + "/index.html");
   res.sendFile(path);
