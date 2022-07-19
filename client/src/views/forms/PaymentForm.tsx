@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box } from '@mui/material'
+import { Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 
 import CardPayment from './CardPayment'
 import BoletoPayment from './BoletoPayment'
@@ -14,13 +14,20 @@ export default function PaymentForm() {
 
   return (
     <Box>
-      <Box sx={{ mb: 4 }}>
-        <label htmlFor='payment-type'>Pagamento:</label>
-        <br />
-        <select id='payment-type' value={paymentType} onChange={e => setPaymentType(Number(e.target.value))}>
-          <option value={PaymentType.CARD}>CARTAO</option>
-          <option value={PaymentType.BOLETO}>BOLETO</option>
-        </select>
+      <Box sx={{ marginBottom: 4 }}>
+        <FormControl fullWidth>
+          <InputLabel id='payment-label'>Pagamento</InputLabel>
+          <Select
+            fullWidth
+            labelId='payment-label'
+            label='Pagamento'
+            value={paymentType}
+            onChange={e => setPaymentType(Number(e.target.value))}
+          >
+            <MenuItem value={PaymentType.CARD}>CARTAO</MenuItem>
+            <MenuItem value={PaymentType.BOLETO}>BOLETO</MenuItem>
+          </Select>
+        </FormControl>
       </Box>
 
       {paymentType === PaymentType.CARD ? <CardPayment /> : <BoletoPayment />}
