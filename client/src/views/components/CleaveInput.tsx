@@ -1,8 +1,6 @@
 import Cleave from 'cleave.js/react'
 import { Props } from 'cleave.js/react/props'
 
-// import { Box, Typography, TextField, InputAdornment } from '@mui/material'
-
 type CleaveInputProps = {} & Omit<Props, 'options'>
 
 // export function CleaveCard({ inputRef, ...rest }: CleaveInputProps) {
@@ -20,4 +18,52 @@ export function CleaveCPF({ ...rest }: CleaveInputProps) {
       {...rest}
     />
   )
+}
+
+export function CleaveCEP({ ...rest }: CleaveInputProps) {
+  return (
+    <Cleave
+      options={{
+        delimiter: '-',
+        blocks: [5, 3],
+        numericOnly: true
+      }}
+      {...rest}
+    />
+  )
+}
+
+export function CleaveNumber({ ...rest }: CleaveInputProps) {
+  return (
+    <Cleave
+      options={{
+        numeral: true,
+        numeralDecimalMark: ',',
+        numeralDecimalScale: 2,
+        delimiter: '.',
+        numeralPositiveOnly: true
+      }}
+      {...rest}
+    />
+  )
+}
+
+export function numberFormat(value: any): string {
+  if (isNaN(value)) return ''
+
+  return new Intl.NumberFormat('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value)
+}
+
+export function numberInterFormat(value: string): number {
+  if (!value) return 0
+
+  const formated = value?.replaceAll('.', '')?.replace(',', '.')
+  const newNumber = Number(formated)
+
+  if (isNaN(newNumber)) return 0
+
+  return newNumber
 }

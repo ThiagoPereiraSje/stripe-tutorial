@@ -1,9 +1,19 @@
 import { useState, FormEvent } from 'react'
 import { useStripe } from '@stripe/react-stripe-js'
-import { Box, Typography, TextField, InputAdornment } from '@mui/material'
+import {
+  Box,
+  Typography,
+  TextField,
+  InputAdornment,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Button
+} from '@mui/material'
 
 import { AccountOutline, EmailOutline } from 'mdi-material-ui'
-import { CleaveCPF } from '../components/CleaveInput'
+import { CleaveCEP, CleaveCPF, CleaveNumber, numberFormat, numberInterFormat } from '../components/CleaveInput'
 
 type Address = {
   address: string
@@ -40,7 +50,7 @@ export default function BoletoPayment() {
     country: 'BR'
   })
 
-  const [amount, setAmount] = useState<number>(500)
+  const [amount, setAmount] = useState<number>(5)
 
   const [messages, setMessages] = useState<string[]>([])
   const stripe = useStripe()
@@ -63,7 +73,7 @@ export default function BoletoPayment() {
       ...mRequest,
       body: JSON.stringify({
         paymentMethod: 'boleto',
-        amount: amount,
+        amount: amount * 100,
         currency: 'brl'
       })
     }).then(r => r.json())
@@ -147,71 +157,105 @@ export default function BoletoPayment() {
               label='CPF/CNPJ'
               placeholder='000.000.000-00'
               value={client.taxId}
-              onChange={e => setClient(d => ({ ...d, taxId: e.target.value }))}
+              onBlur={e => setClient(d => ({ ...d, taxId: e.target.value }))}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <AccountOutline />
-                  </InputAdornment>
-                ),
+                startAdornment: <InputAdornment position='start'></InputAdornment>,
                 inputComponent: props => <CleaveCPF {...props} />
               }}
             />
           </Box>
           <Box>
-            <label htmlFor='address'>Rua:</label> <br />
-            <input
-              id='address'
-              type='text'
+            <TextField
+              fullWidth
+              label='Endereco'
+              placeholder='Av., Rua, Rodovia, etc'
               value={client.address}
               onChange={e => setClient(d => ({ ...d, address: e.target.value }))}
+              InputProps={{
+                startAdornment: <InputAdornment position='start'></InputAdornment>
+              }}
             />
           </Box>
           <Box>
-            <label htmlFor='city'>Cidade:</label> <br />
-            <input
-              id='city'
-              type='text'
+            <TextField
+              fullWidth
+              label='Cidade'
+              placeholder='Nome da Cidade aqui'
               value={client.city}
               onChange={e => setClient(d => ({ ...d, city: e.target.value }))}
+              InputProps={{
+                startAdornment: <InputAdornment position='start'></InputAdornment>
+              }}
             />
           </Box>
           <Box>
-            <label htmlFor='state'>Estado:</label> <br />
-            <input
-              id='state'
-              type='text'
-              value={client.state}
-              onChange={e => setClient(d => ({ ...d, state: e.target.value }))}
-            />
+            <FormControl fullWidth>
+              <InputLabel id='state-label'>Estado</InputLabel>
+              <Select
+                fullWidth
+                labelId='state-label'
+                label='Estado'
+                value={client.state}
+                onChange={e => setClient(d => ({ ...d, state: e.target.value }))}
+              >
+                <MenuItem value='SP'>SAO PAULO</MenuItem>
+                <MenuItem value='MG'>MINAS GERAIS</MenuItem>
+                <MenuItem value='RJ'>RIO DE JANEIRO</MenuItem>
+              </Select>
+            </FormControl>
           </Box>
           <Box>
-            <label htmlFor='postalCode'>CEP:</label> <br />
-            <input
-              id='postalCode'
-              type='text'
+            <TextField
+              fullWidth
+              label='CEP'
+              placeholder='Digite o CEP aqui'
               value={client.postalCode}
-              onChange={e => setClient(d => ({ ...d, postalCode: e.target.value }))}
+              onBlur={e => setClient(d => ({ ...d, postalCode: e.target.value }))}
+              InputProps={{
+                startAdornment: <InputAdornment position='start'></InputAdornment>,
+
+                inputComponent: props => <CleaveCEP {...props} />
+              }}
             />
           </Box>
           <Box>
-            <label htmlFor='country'>Pais:</label> <br />
-            <input
-              id='country'
-              type='text'
-              value={client.country}
-              onChange={e => setClient(d => ({ ...d, country: e.target.value }))}
-            />
+            <FormControl fullWidth>
+              <InputLabel id='country-label'>Pais</InputLabel>
+              <Select
+                fullWidth
+                labelId='country-label'
+                label='Pais'
+                value={client.country}
+                onChange={e => setClient(d => ({ ...d, country: e.target.value }))}
+              >
+                <MenuItem value='BR'>BRASIL</MenuItem>
+              </Select>
+            </FormControl>
           </Box>
           <Box>
-            <label htmlFor='amount'>Valor:</label> <br />
-            <input id='amount' type='number' value={amount} onChange={e => setAmount(Number(e.target.value))} />
+            <TextField
+              fullWidth
+              label='Valor'
+              placeholder='Digite o Valor aqui'
+              value={numberFormat(amount)}
+              onBlur={e => setAmount(numberInterFormat(e.target.value))}
+              InputProps={{
+                startAdornment: <InputAdornment position='start'></InputAdornment>,
+
+                inputComponent: props => <CleaveNumber {...props} />
+              }}
+            />
           </Box>
         </Box>
-        <button>Gerar Boleto</button> &nbsp;
-        <button type='button' onClick={handleClean}>
-          Limpar
-        </button>
+        <Box sx={{ marginTop: '1rem' }}>
+          <Button type='submit' variant='contained' size='large'>
+            Gerar Boleto
+          </Button>
+          &nbsp;
+          <Button size='large' variant='outlined' onClick={handleClean}>
+            Limpar
+          </Button>
+        </Box>
       </form>
 
       <Box sx={{ marginTop: '2rem' }}>
