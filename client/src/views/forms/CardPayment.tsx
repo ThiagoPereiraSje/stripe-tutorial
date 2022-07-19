@@ -1,7 +1,8 @@
 import { FormEvent, useState } from 'react'
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 
-import { Typography, Box } from '@mui/material'
+import { Typography, Box, TextField, InputAdornment, Button } from '@mui/material'
+import { CleaveNumber, numberFormat, numberInterFormat } from '../components/CleaveInput'
 
 const url = '/create-payment'
 
@@ -16,13 +17,13 @@ export default function CardPayment() {
   const elements = useElements()
   const stripe = useStripe()
 
-  const [amount, setAmount] = useState<number>()
+  const [amount, setAmount] = useState<number | undefined>()
   const [messages, setMessages] = useState<string[]>([])
 
   const handleClean = () => {
     const cardElement = elements?.getElement(CardElement)
 
-    setAmount(0)
+    setAmount(undefined)
     cardElement?.clear()
     setMessages([])
   }
@@ -39,7 +40,7 @@ export default function CardPayment() {
       ...mRequest,
       body: JSON.stringify({
         paymentMethod: 'card',
-        amount: amount,
+        amount: amount! * 100,
         currency: 'usd'
       })
     }).then(r => r.json())
@@ -73,20 +74,33 @@ export default function CardPayment() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <Box>
-          <Box sx={{ mb: 2 }}>
-            <label htmlFor='payment-value'>Valor: </label>
-            <br />
-            <input id='payment-value' type='number' value={amount} onChange={e => setAmount(Number(e.target.value))} />
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 4 }}>
+          <Box>
+            <CardElement options={{ classes: { base: 'input-card-style' } }} />
           </Box>
-          <Box sx={{ mb: 2 }}>
-            <label htmlFor='card-element'>Cartao:</label>
-            <CardElement id='card-element' />
+          <Box>
+            <TextField
+              fullWidth
+              label='Valor'
+              placeholder='Digite o valor aqui'
+              value={numberFormat(amount)}
+              onBlur={e => setAmount(numberInterFormat(e.target.value))}
+              InputProps={{
+                startAdornment: <InputAdornment position='start'></InputAdornment>,
+
+                inputComponent: props => <CleaveNumber {...props} />
+              }}
+            />
           </Box>
-          <button disabled={!amount}>Pagar</button> &nbsp;
-          <button type='button' onClick={handleClean}>
-            Limpar
-          </button>
+          <Box>
+            <Button type='submit' disabled={!amount} variant='contained' size='large'>
+              Pagar
+            </Button>
+            &nbsp;
+            <Button size='large' variant='outlined' onClick={handleClean}>
+              Limpar
+            </Button>
+          </Box>
         </Box>
       </form>
 
