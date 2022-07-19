@@ -1,6 +1,9 @@
 import { useState, FormEvent } from 'react'
 import { useStripe } from '@stripe/react-stripe-js'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, TextField, InputAdornment } from '@mui/material'
+
+import { AccountOutline, EmailOutline } from 'mdi-material-ui'
+import { CleaveCPF } from '../components/CleaveInput'
 
 type Address = {
   address: string
@@ -103,35 +106,59 @@ export default function BoletoPayment() {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr' }}>
-          <Box sx={{ mb: 4 }}>
-            <label htmlFor='name'>Nome:</label> <br />
-            <input
-              id='name'
-              type='text'
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
+          <Box>
+            <TextField
+              fullWidth
+              label='Nome'
+              placeholder='Leonard Carter'
               value={client.name}
               onChange={e => setClient(d => ({ ...d, name: e.target.value }))}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <AccountOutline />
+                  </InputAdornment>
+                )
+              }}
             />
           </Box>
-          <Box sx={{ mb: 4 }}>
-            <label htmlFor='email'>E-mail:</label> <br />
-            <input
-              id='email'
-              type='text'
+          <Box>
+            <TextField
+              fullWidth
+              type='email'
+              label='Email'
+              placeholder='carterleonard@gmail.com'
+              helperText='Voce pode usar letras e numeros'
               value={client.email}
               onChange={e => setClient(d => ({ ...d, email: e.target.value }))}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <EmailOutline />
+                  </InputAdornment>
+                )
+              }}
             />
           </Box>
-          <Box sx={{ mb: 4 }}>
-            <label htmlFor='taxId'>CPF/CNPJ:</label> <br />
-            <input
-              id='taxId'
-              type='text'
+          <Box>
+            <TextField
+              fullWidth
+              label='CPF/CNPJ'
+              placeholder='000.000.000-00'
               value={client.taxId}
               onChange={e => setClient(d => ({ ...d, taxId: e.target.value }))}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <AccountOutline />
+                  </InputAdornment>
+                ),
+                inputComponent: props => <CleaveCPF {...props} />
+              }}
             />
           </Box>
-          <Box sx={{ mb: 4 }}>
+          <Box>
             <label htmlFor='address'>Rua:</label> <br />
             <input
               id='address'
@@ -140,7 +167,7 @@ export default function BoletoPayment() {
               onChange={e => setClient(d => ({ ...d, address: e.target.value }))}
             />
           </Box>
-          <Box sx={{ mb: 4 }}>
+          <Box>
             <label htmlFor='city'>Cidade:</label> <br />
             <input
               id='city'
@@ -149,7 +176,7 @@ export default function BoletoPayment() {
               onChange={e => setClient(d => ({ ...d, city: e.target.value }))}
             />
           </Box>
-          <Box sx={{ mb: 4 }}>
+          <Box>
             <label htmlFor='state'>Estado:</label> <br />
             <input
               id='state'
@@ -158,7 +185,7 @@ export default function BoletoPayment() {
               onChange={e => setClient(d => ({ ...d, state: e.target.value }))}
             />
           </Box>
-          <Box sx={{ mb: 4 }}>
+          <Box>
             <label htmlFor='postalCode'>CEP:</label> <br />
             <input
               id='postalCode'
@@ -167,7 +194,7 @@ export default function BoletoPayment() {
               onChange={e => setClient(d => ({ ...d, postalCode: e.target.value }))}
             />
           </Box>
-          <Box sx={{ mb: 4 }}>
+          <Box>
             <label htmlFor='country'>Pais:</label> <br />
             <input
               id='country'
@@ -176,7 +203,7 @@ export default function BoletoPayment() {
               onChange={e => setClient(d => ({ ...d, country: e.target.value }))}
             />
           </Box>
-          <Box sx={{ mb: 4 }}>
+          <Box>
             <label htmlFor='amount'>Valor:</label> <br />
             <input id='amount' type='number' value={amount} onChange={e => setAmount(Number(e.target.value))} />
           </Box>
