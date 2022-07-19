@@ -37,6 +37,8 @@ export default function BoletoPayment() {
     country: 'BR'
   })
 
+  const [amount, setAmount] = useState<number>(500)
+
   const [messages, setMessages] = useState<string[]>([])
   const stripe = useStripe()
 
@@ -58,7 +60,7 @@ export default function BoletoPayment() {
       ...mRequest,
       body: JSON.stringify({
         paymentMethod: 'boleto',
-        amount: 500,
+        amount: amount,
         currency: 'brl'
       })
     }).then(r => r.json())
@@ -173,6 +175,10 @@ export default function BoletoPayment() {
               value={client.country}
               onChange={e => setClient(d => ({ ...d, country: e.target.value }))}
             />
+          </Box>
+          <Box sx={{ mb: 4 }}>
+            <label htmlFor='amount'>Valor:</label> <br />
+            <input id='amount' type='number' value={amount} onChange={e => setAmount(Number(e.target.value))} />
           </Box>
         </Box>
         <button>Gerar Boleto</button> &nbsp;
