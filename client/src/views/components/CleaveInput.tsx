@@ -33,7 +33,7 @@ export function CleaveCEP({ ...rest }: CleaveInputProps) {
   )
 }
 
-export function CleaveNumber({ ...rest }: CleaveInputProps) {
+export function CleaveCurrency({ ...rest }: CleaveInputProps) {
   return (
     <Cleave
       options={{
@@ -49,7 +49,7 @@ export function CleaveNumber({ ...rest }: CleaveInputProps) {
 }
 
 export function numberFormat(value: any): string {
-  if (isNaN(value)) return ''
+  if (!value || isNaN(value)) return ''
 
   return new Intl.NumberFormat('pt-BR', {
     minimumFractionDigits: 2,

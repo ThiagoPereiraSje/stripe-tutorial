@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react'
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 
 import { Typography, Box, TextField, InputAdornment, Button } from '@mui/material'
-import { CleaveNumber, numberFormat, numberInterFormat } from '../components/CleaveInput'
+import { CleaveCurrency, numberFormat, numberInterFormat } from '../components/CleaveInput'
 
 const url = '/create-payment'
 
@@ -17,7 +17,7 @@ export default function CardPayment() {
   const elements = useElements()
   const stripe = useStripe()
 
-  const [amount, setAmount] = useState<number | undefined>()
+  const [amount, setAmount] = useState<number | undefined>(10)
   const [messages, setMessages] = useState<string[]>([])
 
   const handleClean = () => {
@@ -82,18 +82,18 @@ export default function CardPayment() {
             <TextField
               fullWidth
               label='Valor'
-              placeholder='Digite o valor aqui'
+              placeholder='0,00'
               value={numberFormat(amount)}
               onBlur={e => setAmount(numberInterFormat(e.target.value))}
               InputProps={{
-                startAdornment: <InputAdornment position='start'></InputAdornment>,
+                startAdornment: <InputAdornment position='start'>R$</InputAdornment>,
 
-                inputComponent: props => <CleaveNumber {...props} />
+                inputComponent: props => <CleaveCurrency {...props} />
               }}
             />
           </Box>
           <Box>
-            <Button type='submit' disabled={!amount} variant='contained' size='large'>
+            <Button type='submit' variant='contained' size='large'>
               Pagar
             </Button>
             &nbsp;

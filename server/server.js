@@ -40,6 +40,24 @@ app.post("/create-payment", async (req, res) => {
   }
 });
 
+app.post("/create-card-payment", async (req, res) => {
+  try {
+    const payment = await stripe.paymentMethods.create({
+      type: "card",
+      card: {
+        number: "4242424242424242",
+        exp_month: 7,
+        exp_year: 2023,
+        cvc: "314",
+      },
+    });
+
+    res.json({ paymentId: payment.id });
+  } catch (e) {
+    res.status(400).json({ error: { message: e.message } });
+  }
+});
+
 app.get("/config", async (req, res) => {
   res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
 });

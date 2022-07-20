@@ -1,8 +1,17 @@
-POST http://localhost:4242/create-payment
+# POST http://localhost:4242/create-payment
+# Content-Type: application/json
+
+# { 
+#   "paymentMethod": "card",
+#   "amount": 50, 
+#   "currency": "usd" 
+# }
+
+
+POST http://localhost:4242/create-card-payment
 Content-Type: application/json
 
 { 
-  "paymentMethod": "card",
   "amount": 50, 
   "currency": "usd" 
 }

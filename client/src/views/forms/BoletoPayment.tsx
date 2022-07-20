@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 
 import { AccountOutline, EmailOutline } from 'mdi-material-ui'
-import { CleaveCEP, CleaveCPF, CleaveNumber, numberFormat, numberInterFormat } from '../components/CleaveInput'
+import { CleaveCEP, CleaveCPF, CleaveCurrency, numberFormat, numberInterFormat } from '../components/CleaveInput'
 
 type Address = {
   address: string
@@ -236,13 +236,13 @@ export default function BoletoPayment() {
             <TextField
               fullWidth
               label='Valor'
-              placeholder='Digite o Valor aqui'
+              placeholder='0,00'
               value={numberFormat(amount)}
               onBlur={e => setAmount(numberInterFormat(e.target.value))}
               InputProps={{
-                startAdornment: <InputAdornment position='start'></InputAdornment>,
+                startAdornment: <InputAdornment position='start'>R$</InputAdornment>,
 
-                inputComponent: props => <CleaveNumber {...props} />
+                inputComponent: props => <CleaveCurrency {...props} />
               }}
             />
           </Box>
