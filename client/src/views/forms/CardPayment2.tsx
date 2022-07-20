@@ -99,7 +99,7 @@ export default function CardPayment2() {
             </Box>
           </Box>
           <Box>
-            <Button type='submit' variant='contained' size='large'>
+            <Button variant='contained' size='large'>
               Pagar
             </Button>
             &nbsp;
