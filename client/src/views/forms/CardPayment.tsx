@@ -1,5 +1,6 @@
-import { FormEvent, useState } from 'react'
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
+import { FormEvent, useRef, useState } from 'react'
+import { StripeCardNumberElement, StripeCardExpiryElement, StripeCardCvcElement } from '@stripe/stripe-js'
+import { useElements, useStripe, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js'
 
 import { Typography, Box, TextField, InputAdornment, Button } from '@mui/material'
 import { CleaveNumber, numberFormat, numberInterFormat } from '../components/CleaveInput'
@@ -16,15 +17,16 @@ const mRequest: RequestInit = {
 export default function CardPayment() {
   const elements = useElements()
   const stripe = useStripe()
+  const cardNumber = useRef<StripeCardNumberElement>()
+  const cardExpiry = useRef<StripeCardExpiryElement>()
+  const cardCvc = useRef<StripeCardCvcElement>()
 
   const [amount, setAmount] = useState<number | undefined>()
   const [messages, setMessages] = useState<string[]>([])
 
   const handleClean = () => {
-    const cardElement = elements?.getElement(CardElement)
-
     setAmount(undefined)
-    cardElement?.clear()
+    cardNumber.current?.clear()
     setMessages([])
   }
 
@@ -54,21 +56,21 @@ export default function CardPayment() {
     setMessages(m => [...m, 'Payment intent created...'])
 
     // Confirm the payment on the client
-    const cardElement: any = elements?.getElement(CardElement)
+    // const cardElement: any = elements?.getElement(CardElement)
 
-    const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: cardElement
-      }
-    })
+    // const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+    //   payment_method: {
+    //     card: cardElement
+    //   }
+    // })
 
-    if (stripeError) {
-      setMessages(m => [...m, stripeError?.message || 'Oops!'])
+    // if (stripeError) {
+    //   setMessages(m => [...m, stripeError?.message || 'Oops!'])
 
-      return
-    }
+    //   return
+    // }
 
-    setMessages(m => [...m, `Payment intent id: ${paymentIntent?.id}, status: ${paymentIntent?.status}`])
+    // setMessages(m => [...m, `Payment intent id: ${paymentIntent?.id}, status: ${paymentIntent?.status}`])
   }
 
   return (
@@ -76,7 +78,20 @@ export default function CardPayment() {
       <form onSubmit={handleSubmit}>
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 4 }}>
           <Box>
-            <CardElement options={{ classes: { base: 'input-card-style' } }} />
+            <CardNumberElement
+              options={{ placeholder: '0000 0000 0000 0000', classes: { base: 'card-elements-style' } }}
+              onReady={el => (cardNumber.current = el)}
+            />
+
+            <CardExpiryElement
+              options={{ classes: { base: 'card-elements-style' } }}
+              onReady={el => (cardExpiry.current = el)}
+            />
+
+            <CardCvcElement
+              options={{ classes: { base: 'card-elements-style' } }}
+              onReady={el => (cardCvc.current = el)}
+            />
           </Box>
           <Box>
             <TextField
@@ -115,3 +130,9 @@ export default function CardPayment() {
     </div>
   )
 }
+
+/*
+<Box>
+  <CardElement options={{ classes: { base: 'input-card-style' } }} />
+</Box>
+*/
