@@ -82,18 +82,18 @@ export default function CardPayment() {
             <TextField
               fullWidth
               label='Valor'
-              placeholder='Digite o valor aqui'
+              placeholder='0,00'
               value={numberFormat(amount)}
               onBlur={e => setAmount(numberInterFormat(e.target.value))}
               InputProps={{
-                startAdornment: <InputAdornment position='start'></InputAdornment>,
+                startAdornment: <InputAdornment position='start'>R$</InputAdornment>,
 
                 inputComponent: props => <CleaveNumber {...props} />
               }}
             />
           </Box>
           <Box>
-            <Button type='submit' disabled={!amount} variant='contained' size='large'>
+            <Button type='submit' variant='contained' size='large'>
               Pagar
             </Button>
             &nbsp;

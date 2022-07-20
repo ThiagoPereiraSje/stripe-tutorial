@@ -236,11 +236,11 @@ export default function BoletoPayment() {
             <TextField
               fullWidth
               label='Valor'
-              placeholder='Digite o Valor aqui'
+              placeholder='0,00'
               value={numberFormat(amount)}
               onBlur={e => setAmount(numberInterFormat(e.target.value))}
               InputProps={{
-                startAdornment: <InputAdornment position='start'></InputAdornment>,
+                startAdornment: <InputAdornment position='start'>R$</InputAdornment>,
 
                 inputComponent: props => <CleaveNumber {...props} />
               }}
