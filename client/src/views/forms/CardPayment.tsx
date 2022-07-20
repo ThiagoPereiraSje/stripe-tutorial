@@ -26,10 +26,12 @@ export default function CardPayment() {
   const cardExpiry = useRef<StripeCardExpiryElement>()
   const cardCvc = useRef<StripeCardCvcElement>()
 
+  const [name, setName] = useState('')
   const [amount, setAmount] = useState<number | undefined>()
   const [messages, setMessages] = useState<string[]>([])
 
   const handleClean = () => {
+    setName('')
     setAmount(undefined)
     cardNumber.current?.clear()
     cardExpiry.current?.clear()
@@ -50,8 +52,14 @@ export default function CardPayment() {
 
     if (!elements || !stripe) return
 
+    if (!name) {
+      setMessages(m => [...m, 'O nome do Cliente nao foi informado!'])
+
+      return
+    }
+
     if (!amount) {
-      setMessages(m => [...m, 'O valor da pagamento nao foi informado!'])
+      setMessages(m => [...m, 'O valor a pagar nao foi informado!'])
 
       return
     }
@@ -79,7 +87,10 @@ export default function CardPayment() {
     // Confirm the payment on the client
     const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
-        card: cardNumber.current!
+        card: cardNumber.current!,
+        billing_details: {
+          name: name
+        }
       }
     })
 
@@ -116,6 +127,19 @@ export default function CardPayment() {
             <CardCvcElement
               options={{ classes: { base: 'card-elements-style' } }}
               onReady={el => (cardCvc.current = el)}
+            />
+          </Box>
+          <Box>
+            <TextField
+              fullWidth
+              label='Nome'
+              name='name'
+              placeholder='Digite seu nome'
+              value={name}
+              onChange={e => setName(e.target.value.toUpperCase())}
+              InputProps={{
+                startAdornment: <InputAdornment position='start'></InputAdornment>
+              }}
             />
           </Box>
           <Box>
