@@ -47,6 +47,14 @@ export default function CardPayment() {
     // console.log(el)
   }
 
+  const handleCardExpiryChange = (e: any) => {
+    console.log(e)
+  }
+
+  const handleCardCvcChange = (e: any) => {
+    console.log(e)
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
@@ -122,11 +130,13 @@ export default function CardPayment() {
             <CardExpiryElement
               options={{ classes: { base: 'card-elements-style' } }}
               onReady={el => (cardExpiry.current = el)}
+              onChange={handleCardExpiryChange}
             />
 
             <CardCvcElement
               options={{ classes: { base: 'card-elements-style' } }}
               onReady={el => (cardCvc.current = el)}
+              onChange={handleCardCvcChange}
             />
           </Box>
           <Box>
