@@ -42,17 +42,43 @@ app.post("/create-payment", async (req, res) => {
 
 app.post("/create-card-payment", async (req, res) => {
   try {
-    const payment = await stripe.paymentMethods.create({
-      type: "card",
-      card: {
-        number: "4242424242424242",
-        exp_month: 7,
-        exp_year: 2023,
-        cvc: "314",
+    // const paymentMethod = await stripe.paymentMethods.create({
+    //   type: "card",
+    //   card: {
+    //     number: "4242424242424242",
+    //     exp_month: 7,
+    //     exp_year: 2023,
+    //     cvc: 314,
+    //   },
+    //   billing_details: {
+    //     name: "Jenny Rosen",
+    //     email: "jr@example.com",
+    //     address: {
+    //       line1: "Av Angelica 2491, Conjunto 91E",
+    //       city: "Sao Paulo",
+    //       state: "SP",
+    //       postal_code: "01227-200",
+    //       country: "BR",
+    //     },
+    //   },
+    // });
+
+    const payment = await stripe.paymentIntents.create({
+      amount: 1000,
+      currency: "brl",
+      payment_method: {
+        type: "card",
+        card: {
+          number: "4242424242424242",
+          exp_month: 7,
+          exp_year: 2023,
+          cvc: "314",
+        },
       },
+      payment_method_types: ["card"],
     });
 
-    res.json({ paymentId: payment.id });
+    res.json({ clientSecret: payment.client_secret });
   } catch (e) {
     res.status(400).json({ error: { message: e.message } });
   }
