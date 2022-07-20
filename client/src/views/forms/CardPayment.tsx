@@ -32,6 +32,8 @@ export default function CardPayment() {
   const handleClean = () => {
     setAmount(undefined)
     cardNumber.current?.clear()
+    cardExpiry.current?.clear()
+    cardCvc.current?.clear()
     setMessages([])
   }
 
@@ -48,7 +50,13 @@ export default function CardPayment() {
 
     if (!elements || !stripe) return
 
-    setMessages(m => [...m, 'Creating payment intent...'])
+    if (!amount) {
+      setMessages(m => [...m, 'O valor da pagamento nao foi informado!'])
+
+      return
+    }
+
+    setMessages(m => [...m, 'Criando uma intencao de pagamento...'])
 
     // Create payment intent on the server
     const { error: backendError, clientSecret } = await fetch(url, {
@@ -66,7 +74,7 @@ export default function CardPayment() {
       return
     }
 
-    setMessages(m => [...m, 'Payment intent created...'])
+    setMessages(m => [...m, 'Intencao de pagamento foi criada...'])
 
     // Confirm the payment on the client
     const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
@@ -81,7 +89,7 @@ export default function CardPayment() {
       return
     }
 
-    setMessages(m => [...m, `Payment intent id: ${paymentIntent?.id}, status: ${paymentIntent?.status}`])
+    setMessages(m => [...m, `Pagamento id: ${paymentIntent?.id}, status: ${paymentIntent?.status}`])
   }
 
   return (
